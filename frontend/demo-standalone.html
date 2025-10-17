@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Builder Demo - Standalone</title>
+  <link rel="stylesheet" href="./dist/formbuilder.css">
+</head>
+<body>
+  <h1 style="text-align: center; margin: 20px;">Form Builder Demo - Standalone Mode</h1>
+  
+  <div id="formbuilder-container"></div>
+
+  <script src="./dist/formbuilder.js"></script>
+  <script>
+    // Mount the form builder
+    window.mountFormBuilder(
+      document.getElementById('formbuilder-container'),
+      {
+        apiUrl: 'http://localhost:5000/api',
+        language: 'en',
+        onInit: () => {
+          console.log('Form Builder initialized');
+        },
+        onChange: (fields) => {
+          console.log('Form changed:', fields);
+        },
+        onSave: (schema) => {
+          console.log('Form saved:', schema);
+        }
+      }
+    );
+  </script>
+</body>
+</html>
