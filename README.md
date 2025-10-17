@@ -55,7 +55,7 @@ formbuilder-aspnet-sqlserver/
 
 - [.NET SDK 9.0+](https://dotnet.microsoft.com/download)
 - [Node.js 20+](https://nodejs.org/)
-- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) or LocalDB
+- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) or LocalDB (optional - can use in-memory database for testing)
 
 ## Getting Started
 
@@ -66,14 +66,30 @@ formbuilder-aspnet-sqlserver/
    cd backend/FormBuilderAPI
    ```
 
-2. Update the connection string in `appsettings.json` if needed:
+2. **Option 1: Using SQL Server**
+   
+   Update the connection string in `appsettings.json`:
    ```json
    "ConnectionStrings": {
-     "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=FormBuilderDB;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=true"
+     "DefaultConnection": "Server=YOUR_SERVER;Database=FormBuilderDB;..."
    }
    ```
+   
+   Set `UseInMemoryDatabase` to `false` in `appsettings.Development.json`:
+   ```json
+   "UseInMemoryDatabase": false
+   ```
 
-3. Run the application:
+3. **Option 2: Using In-Memory Database (for testing/demo)**
+   
+   Set `UseInMemoryDatabase` to `true` in `appsettings.Development.json` (default):
+   ```json
+   "UseInMemoryDatabase": true
+   ```
+   
+   This is useful for testing without SQL Server installed.
+
+4. Run the application:
    ```bash
    dotnet run
    ```
@@ -343,6 +359,17 @@ The built files will be in `frontend/dist/`:
 ## License
 
 This project is provided as-is for demonstration purposes.
+
+## Screenshots
+
+### Form Builder - English Interface
+![Form Builder English](https://github.com/user-attachments/assets/0a8054b3-5f3a-48a4-b714-b8e30961d6da)
+
+### Form Builder - With Editable Grid
+![Form Builder with Field](https://github.com/user-attachments/assets/7b09ca79-4605-459a-9360-70e0ebf8c0da)
+
+### Form Builder - Farsi/Persian (RTL Support)
+![Form Builder Farsi](https://github.com/user-attachments/assets/6280eb77-193b-42af-9b61-8a0eaf09d5b4)
 
 ## Notes
 

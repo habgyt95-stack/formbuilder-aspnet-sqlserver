@@ -26,12 +26,21 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Configure Entity Framework with SQL Server
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-    ?? "Server=(localdb)\\mssqllocaldb;Database=FormBuilderDB;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=true";
+// Configure Entity Framework with SQL Server or InMemory for testing
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var useInMemoryDb = builder.Configuration.GetValue<bool>("UseInMemoryDatabase") 
+    || string.IsNullOrEmpty(connectionString);
 
-builder.Services.AddDbContext<FormBuilderContext>(options =>
-    options.UseSqlServer(connectionString));
+if (useInMemoryDb)
+{
+    builder.Services.AddDbContext<FormBuilderContext>(options =>
+        options.UseInMemoryDatabase("FormBuilderDB"));
+}
+else
+{
+    builder.Services.AddDbContext<FormBuilderContext>(options =>
+        options.UseSqlServer(connectionString));
+}
 
 var app = builder.Build();
 
@@ -52,18 +61,21 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Auto-migrate database on startup
-using (var scope = app.Services.CreateScope())
+// Auto-migrate database on startup (only for SQL Server)
+if (!useInMemoryDb)
 {
-    var db = scope.ServiceProvider.GetRequiredService<FormBuilderContext>();
-    try
+    using (var scope = app.Services.CreateScope())
     {
-        db.Database.Migrate();
-    }
-    catch (Exception ex)
-    {
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-        logger.LogWarning(ex, "Database migration failed. Make sure SQL Server is running.");
+        var db = scope.ServiceProvider.GetRequiredService<FormBuilderContext>();
+        try
+        {
+            db.Database.Migrate();
+        }
+        catch (Exception ex)
+        {
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogWarning(ex, "Database migration failed. Make sure SQL Server is running.");
+        }
     }
 }
 
