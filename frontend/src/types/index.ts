@@ -29,6 +29,11 @@ export interface FormField {
   defaultValue?: string;
   validationRules?: string;
   order: number;
+  // Canvas positioning
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
 }
 
 export type InputType = 
